@@ -39,8 +39,8 @@ function App() {
       const processedMarketData = marketDataResponse.price ? {
         symbol: marketDataResponse.symbol || 'SPY',
         price: parseFloat(marketDataResponse.price.close) || 0,
-        change: parseFloat(marketDataResponse.price.close) - parseFloat(marketDataResponse.price.open) || 0,
-        changePercent: ((parseFloat(marketDataResponse.price.close) - parseFloat(marketDataResponse.price.open)) / parseFloat(marketDataResponse.price.open) * 100) || 0,
+        change: marketDataResponse.price.change || (parseFloat(marketDataResponse.price.close) - parseFloat(marketDataResponse.price.open)) || 0,
+        changePercent: marketDataResponse.price.changePercent || ((parseFloat(marketDataResponse.price.close) - parseFloat(marketDataResponse.price.open)) / parseFloat(marketDataResponse.price.open) * 100) || 0,
         volume: parseFloat(marketDataResponse.price.volume) || 0,
         high: parseFloat(marketDataResponse.price.high) || 0,
         low: parseFloat(marketDataResponse.price.low) || 0,
