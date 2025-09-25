@@ -25,10 +25,10 @@ function App() {
       setLoading(true);
       setError(null);
 
-      // Fetch only available endpoints
+      // Fetch only available endpoints with timeout
       const [marketRes, analysisRes] = await Promise.all([
-        axios.get(`${API_BASE_URL}/market/summary`),
-        axios.get(`${API_BASE_URL}/market/analysis`)
+        axios.get(`${API_BASE_URL}/market/summary`, { timeout: 10000 }),
+        axios.get(`${API_BASE_URL}/market/analysis`, { timeout: 15000 })
       ]);
 
       // Handle wrapped responses from backend
@@ -102,7 +102,26 @@ function App() {
       setLoading(false);
     } catch (err: any) {
       console.error('Error fetching data:', err);
-      setError(err.message || 'Failed to fetch data');
+      
+      let errorMessage = 'Failed to fetch data';
+      
+      if (err.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        errorMessage = `Server error: ${err.response.status}`;
+        console.error('Response data:', err.response.data);
+        console.error('Response status:', err.response.status);
+      } else if (err.request) {
+        // The request was made but no response was received
+        errorMessage = 'API is not responding. Please check the backend service.';
+        console.error('No response received:', err.request);
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        errorMessage = err.message || 'Failed to fetch data';
+        console.error('Error setting up request:', err.message);
+      }
+      
+      setError(errorMessage);
       setLoading(false);
     }
   };
