@@ -44,40 +44,73 @@ const TradingViewChart = ({ data }) => {
 
     chartRef.current = chart;
 
-    // Create candlestick series - using v5 API
-    const candleSeries = chart.addCandlestickSeries({
-      upColor: '#10b981',
-      downColor: '#ef4444',
-      borderVisible: true,
-      borderUpColor: '#10b981',
-      borderDownColor: '#ef4444',
-      wickUpColor: '#10b981',
-      wickDownColor: '#ef4444',
-    });
+    // Create candlestick series - handle both old and new API
+    let candleSeries;
+    try {
+      // Try new API first
+      if (typeof chart.addCandlestickSeries === 'function') {
+        candleSeries = chart.addCandlestickSeries({
+          upColor: '#10b981',
+          downColor: '#ef4444',
+          borderVisible: true,
+          borderUpColor: '#10b981',
+          borderDownColor: '#ef4444',
+          wickUpColor: '#10b981',
+          wickDownColor: '#ef4444',
+        });
+      } else if (typeof chart.addSeries === 'function') {
+        // Fallback to generic addSeries
+        candleSeries = chart.addSeries({
+          type: 'Candlestick',
+          upColor: '#10b981',
+          downColor: '#ef4444',
+          borderVisible: true,
+          borderUpColor: '#10b981',
+          borderDownColor: '#ef4444',
+          wickUpColor: '#10b981',
+          wickDownColor: '#ef4444',
+        });
+      } else {
+        console.error('Chart API does not support candlestick series');
+        return;
+      }
+    } catch (e) {
+      console.error('Error creating candlestick series:', e);
+      // Fallback to line series
+      candleSeries = chart.addLineSeries({
+        color: '#3b82f6',
+        lineWidth: 2,
+      });
+    }
     candleSeriesRef.current = candleSeries;
 
-    // Create predicted range lines
-    const upperLine = chart.addLineSeries({
-      color: '#fbbf24',
-      lineWidth: 2,
-      lineStyle: 2, // Dashed line
-      title: 'Predicted Upper Range',
-      priceLineVisible: false,
-      lastValueVisible: false,
-      crosshairMarkerVisible: false,
-    });
-    predictedUpperRef.current = upperLine;
+    // Create predicted range lines with error handling
+    let upperLine, lowerLine;
+    try {
+      upperLine = chart.addLineSeries({
+        color: '#fbbf24',
+        lineWidth: 2,
+        lineStyle: 2, // Dashed line
+        title: 'Predicted Upper Range',
+        priceLineVisible: false,
+        lastValueVisible: false,
+        crosshairMarkerVisible: false,
+      });
+      predictedUpperRef.current = upperLine;
 
-    const lowerLine = chart.addLineSeries({
-      color: '#fbbf24',
-      lineWidth: 2,
-      lineStyle: 2, // Dashed line
-      title: 'Predicted Lower Range',
-      priceLineVisible: false,
-      lastValueVisible: false,
-      crosshairMarkerVisible: false,
-    });
-    predictedLowerRef.current = lowerLine;
+      lowerLine = chart.addLineSeries({
+        color: '#fbbf24',
+        lineWidth: 2,
+        lineStyle: 2, // Dashed line
+        title: 'Predicted Lower Range',
+        priceLineVisible: false,
+        lastValueVisible: false,
+        crosshairMarkerVisible: false,
+      });
+      predictedLowerRef.current = lowerLine;
+    } catch (e) {
+      console.error('Error creating line series:', e);
+    }
 
     // Handle resize
     const handleResize = () => {
