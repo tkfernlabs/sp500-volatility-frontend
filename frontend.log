@@ -1,8 +1,6 @@
-nohup: ignoring input
 Frontend server is running on http://0.0.0.0:5000
 Serving files from: /root/sp500-frontend/build
 Request received: GET /
-Request received: GET /static/css/main.9ae6ca87.css
-Request received: GET /static/js/main.f4c841cc.js
-Request received: GET /logo192.png
-Request received: GET /favicon.ico
+Request received: GET /static/js/main.af871d03.js
+Request received: GET /static/css/main.20b81f96.css
+Request received: GET /static/js/main.af871d03.js.map

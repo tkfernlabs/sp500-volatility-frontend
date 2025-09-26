@@ -17,6 +17,7 @@ function App() {
   const [signals, setSignals] = useState<Signal[]>([]);
   const [harParams, setHarParams] = useState<HARParams | null>(null);
   const [historicalData, setHistoricalData] = useState<any[]>([]);
+  const [chartData, setChartData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [lastUpdate, setLastUpdate] = useState<Date>(new Date());
@@ -27,9 +28,10 @@ function App() {
       setError(null);
 
       // Fetch only available endpoints with timeout
-      const [marketRes, analysisRes] = await Promise.all([
+      const [marketRes, analysisRes, historicalRes] = await Promise.all([
         axios.get(`${API_BASE_URL}/market/summary`, { timeout: 10000 }),
-        axios.get(`${API_BASE_URL}/market/analysis`, { timeout: 15000 })
+        axios.get(`${API_BASE_URL}/market/analysis`, { timeout: 15000 }),
+        axios.get(`${API_BASE_URL}/market/historical-predictions?days=30`, { timeout: 10000 })
       ]);
 
       // Handle wrapped responses from backend
@@ -94,11 +96,15 @@ function App() {
       // Extract historical data from analysis response
       const processedHistorical = analysisResponse.historicalData || [];
       
+      // Extract chart data from historical predictions
+      const processedChartData = historicalRes.data?.data || [];
+      
       setMarketData(processedMarketData);
       setVolatilityData(processedVolatility);
       setSignals(processedSignals);
       setHarParams(processedHAR);
       setHistoricalData(processedHistorical);
+      setChartData(processedChartData);
       setLastUpdate(new Date());
       setLoading(false);
     } catch (err: any) {
@@ -206,7 +212,7 @@ function App() {
 
           {/* TradingView Chart with Predicted Ranges */}
           <div className="lg:col-span-2">
-            <TradingViewChart data={historicalData} />
+            <TradingViewChart data={chartData} />
           </div>
 
           {/* Volatility Indicators */}
