@@ -145,7 +145,7 @@ function App() {
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-500 mx-auto mb-4"></div>
           <p className="text-xl">Loading S&P 500 market data...</p>
-          <p className="text-sm text-gray-400 mt-2">Fetching real-time data from Alpha Vantage API</p>
+          <p className="text-sm text-gray-400 mt-2">Fetching real-time data from Yahoo Finance</p>
         </div>
       </div>
     );
@@ -227,7 +227,7 @@ function App() {
         {/* Data Source Notice */}
         <div className="mt-8 p-4 bg-gray-800 rounded-lg">
           <p className="text-sm text-gray-400 text-center">
-            <span className="text-green-400">● LIVE DATA</span> - Powered by Alpha Vantage API | 
+            <span className="text-green-400">● LIVE DATA</span> - Powered by Yahoo Finance | 
             Database: PostgreSQL (Neon) | Updates every 30 seconds during market hours
           </p>
         </div>

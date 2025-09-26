@@ -31,7 +31,7 @@ const MarketSummary: React.FC<MarketSummaryProps> = ({ data }) => {
       <div className="flex justify-between items-start mb-4">
         <div>
           <h2 className="text-2xl font-bold text-white mb-1">S&P 500 (SPY)</h2>
-          <p className="text-sm text-gray-400">Real-time market data from Alpha Vantage</p>
+          <p className="text-sm text-gray-400">Real-time market data from Yahoo Finance</p>
         </div>
         <div className="text-right">
           <div className="text-3xl font-bold text-white">${formatNumber(data.price)}</div>
