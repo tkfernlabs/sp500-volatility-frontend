@@ -5,7 +5,7 @@ import MarketSummary from './components/MarketSummary';
 import VolatilityIndicators from './components/VolatilityIndicators';
 import TradingSignals from './components/TradingSignals';
 import HARModel from './components/HARModel';
-import HistoricalChart from './components/HistoricalChart';
+import TradingViewChart from './components/TradingViewChart';
 import PriceVolatilityRanges from './components/PriceVolatilityRanges';
 import { MarketData, VolatilityData, Signal, HARParams } from './types';
 
@@ -204,9 +204,9 @@ function App() {
             <MarketSummary data={marketData} />
           </div>
 
-          {/* Historical Chart */}
+          {/* TradingView Chart with Predicted Ranges */}
           <div className="lg:col-span-2">
-            <HistoricalChart data={historicalData} />
+            <TradingViewChart data={historicalData} />
           </div>
 
           {/* Volatility Indicators */}
@@ -223,6 +223,7 @@ function App() {
           <div className="lg:col-span-2">
             <PriceVolatilityRanges 
               currentPrice={marketData?.price || 6600}
+              openPrice={marketData?.open}
               volatility={{
                 realized: volatilityData?.realizedVolatility || 0.08,
                 garchForecast: volatilityData?.garchForecast || 0.08,

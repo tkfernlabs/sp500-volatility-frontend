@@ -2,6 +2,7 @@ import React from 'react';
 
 interface PriceVolatilityRangesProps {
   currentPrice: number;
+  openPrice?: number;
   volatility: {
     realized: number;
     garchForecast: number;
@@ -11,9 +12,9 @@ interface PriceVolatilityRangesProps {
   };
 }
 
-const PriceVolatilityRanges: React.FC<PriceVolatilityRangesProps> = ({ currentPrice, volatility }) => {
+const PriceVolatilityRanges: React.FC<PriceVolatilityRangesProps> = ({ currentPrice, openPrice, volatility }) => {
   // Calculate price ranges using 2-sigma (95% confidence interval)
-  const calculatePriceRange = (vol: number, days: number) => {
+  const calculatePriceRange = (vol: number, days: number, basePrice?: number) => {
     // Ensure vol is a proper decimal (if it's > 1, assume it's a percentage)
     const normalizedVol = vol > 1 ? vol / 100 : vol;
     
@@ -25,18 +26,20 @@ const PriceVolatilityRanges: React.FC<PriceVolatilityRangesProps> = ({ currentPr
     const periodVol = dailyVol * Math.sqrt(days);
     
     // 2-sigma gives ~95% confidence interval
-    const priceMove = currentPrice * periodVol * 2;
+    const priceToUse = basePrice || currentPrice;
+    const priceMove = priceToUse * periodVol * 2;
     
     return {
-      upper: currentPrice + priceMove,
-      lower: currentPrice - priceMove,
+      upper: priceToUse + priceMove,
+      lower: priceToUse - priceMove,
       move: priceMove
     };
   };
 
   // Use GARCH for short-term, realized for medium-term
+  // For today's range, use opening price as the base
   const ranges = {
-    intraday: calculatePriceRange(volatility.garchForecast || 15, 0.25), // 0.25 = 1/4 day for intraday
+    intraday: calculatePriceRange(volatility.garchForecast || 15, 0.25, openPrice), // Use opening price for today's range
     oneDay: calculatePriceRange(volatility.garchForecast || 15, 1),
     fiveDay: calculatePriceRange(volatility.garchForecast || 15, 5),
     oneMonth: calculatePriceRange(volatility.realized || 18, 22),
@@ -168,7 +171,7 @@ const PriceVolatilityRanges: React.FC<PriceVolatilityRangesProps> = ({ currentPr
       <div className="mt-4 p-3 bg-gray-700/30 rounded">
         <p className="text-xs text-gray-400">
           <span className="font-semibold">Note:</span> Price ranges are calculated using 2-sigma (95% confidence interval) 
-          based on current volatility forecasts. Today's range shows expected high/low for the current trading session. 
+          based on current volatility forecasts. Today's range is calculated from the opening price to show expected intraday movement. 
           Actual prices may move beyond these ranges during extreme market conditions.
         </p>
       </div>
