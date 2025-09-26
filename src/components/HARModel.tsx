@@ -3,9 +3,10 @@ import { HARParams } from '../types';
 
 interface HARModelProps {
   params: HARParams | null;
+  currentPrice?: number;
 }
 
-const HARModel: React.FC<HARModelProps> = ({ params }) => {
+const HARModel: React.FC<HARModelProps> = ({ params, currentPrice = 6600 }) => {
   if (!params) return null;
 
   const formatNumber = (num: number, decimals: number = 4) => {
@@ -95,17 +96,26 @@ const HARModel: React.FC<HARModelProps> = ({ params }) => {
             <p className="text-xl font-bold text-blue-400">
               {formatNumber(params.forecast_1d)}
             </p>
+            <p className="text-xs text-gray-300 mt-1">
+              ±${(currentPrice * (params.forecast_1d > 1 ? params.forecast_1d/100 : params.forecast_1d) / Math.sqrt(252) * 2).toFixed(0)}
+            </p>
           </div>
           <div className="bg-green-900/20 rounded p-3 text-center">
             <p className="text-xs text-gray-400 mb-1">5-Day</p>
             <p className="text-xl font-bold text-green-400">
               {formatNumber(params.forecast_5d)}
             </p>
+            <p className="text-xs text-gray-300 mt-1">
+              ±${(currentPrice * (params.forecast_5d > 1 ? params.forecast_5d/100 : params.forecast_5d) / Math.sqrt(252) * Math.sqrt(5) * 2).toFixed(0)}
+            </p>
           </div>
           <div className="bg-purple-900/20 rounded p-3 text-center">
             <p className="text-xs text-gray-400 mb-1">22-Day</p>
             <p className="text-xl font-bold text-purple-400">
               {formatNumber(params.forecast_22d)}
+            </p>
+            <p className="text-xs text-gray-300 mt-1">
+              ±${(currentPrice * (params.forecast_22d > 1 ? params.forecast_22d/100 : params.forecast_22d) / Math.sqrt(252) * Math.sqrt(22) * 2).toFixed(0)}
             </p>
           </div>
         </div>

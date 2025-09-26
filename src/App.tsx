@@ -6,6 +6,7 @@ import VolatilityIndicators from './components/VolatilityIndicators';
 import TradingSignals from './components/TradingSignals';
 import HARModel from './components/HARModel';
 import HistoricalChart from './components/HistoricalChart';
+import PriceVolatilityRanges from './components/PriceVolatilityRanges';
 import { MarketData, VolatilityData, Signal, HARParams } from './types';
 
 const API_BASE_URL = 'https://backend-morphvm-elaa2g3p.http.cloud.morph.so/api';
@@ -37,7 +38,7 @@ function App() {
       
       // Extract the actual price data from the nested structure
       const processedMarketData = marketDataResponse.price ? {
-        symbol: marketDataResponse.symbol || 'SPY',
+        symbol: marketDataResponse.symbol || '^GSPC',
         price: parseFloat(marketDataResponse.price.close) || 0,
         change: marketDataResponse.price.change || (parseFloat(marketDataResponse.price.close) - parseFloat(marketDataResponse.price.open)) || 0,
         changePercent: marketDataResponse.price.changePercent || ((parseFloat(marketDataResponse.price.close) - parseFloat(marketDataResponse.price.open)) / parseFloat(marketDataResponse.price.open) * 100) || 0,
@@ -215,7 +216,21 @@ function App() {
 
           {/* HAR Model */}
           <div>
-            <HARModel params={harParams} />
+            <HARModel params={harParams} currentPrice={marketData?.price || 6600} />
+          </div>
+
+          {/* Price Volatility Ranges */}
+          <div className="lg:col-span-2">
+            <PriceVolatilityRanges 
+              currentPrice={marketData?.price || 6600}
+              volatility={{
+                realized: volatilityData?.realizedVolatility || 0.08,
+                garchForecast: volatilityData?.garchForecast || 0.08,
+                harDaily: harParams?.forecast_1d,
+                harWeekly: harParams?.forecast_5d,
+                harMonthly: harParams?.forecast_22d
+              }}
+            />
           </div>
 
           {/* Trading Signals */}

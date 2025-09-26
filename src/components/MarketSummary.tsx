@@ -30,7 +30,7 @@ const MarketSummary: React.FC<MarketSummaryProps> = ({ data }) => {
     <div className="bg-gray-800 rounded-lg p-6 shadow-xl">
       <div className="flex justify-between items-start mb-4">
         <div>
-          <h2 className="text-2xl font-bold text-white mb-1">S&P 500 (SPY)</h2>
+          <h2 className="text-2xl font-bold text-white mb-1">S&P 500 Index (US500)</h2>
           <p className="text-sm text-gray-400">Real-time market data from Yahoo Finance</p>
         </div>
         <div className="text-right">
